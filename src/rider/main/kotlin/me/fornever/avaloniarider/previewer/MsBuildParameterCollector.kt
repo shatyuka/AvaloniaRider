@@ -60,7 +60,7 @@ class MsBuildParameterCollector(private val project: Project) {
             return property
         }
 
-        val previewerPath = Paths.get(
+        var previewerPath = Paths.get(
             getProperty(
                 runnableProjectProperties,
                 avaloniaPreviewerPathKey,
@@ -75,6 +75,10 @@ class MsBuildParameterCollector(private val project: Project) {
         val targetPath = Paths.get(getProperty(runnableProjectProperties, "TargetPath"))
 
         val xamlAssemblyPath = Paths.get(getProperty(xamlContainingProjectProperties, "TargetPath"))
+
+        if (previewerPath.root == null) {
+            previewerPath = targetDir.resolve(previewerPath)
+        }
 
         return AvaloniaPreviewerParameters(
             runtime,

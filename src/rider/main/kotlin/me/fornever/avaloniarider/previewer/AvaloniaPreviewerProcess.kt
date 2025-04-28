@@ -50,6 +50,7 @@ class AvaloniaPreviewerProcess(
     private fun getCommandLine(transport: PreviewerTransport, method: PreviewerMethod): GeneralCommandLine {
         val runtimeConfig = parameters.targetDir.resolve("${parameters.targetName}.runtimeconfig.json")
         val depsFile = parameters.targetDir.resolve("${parameters.targetName}.deps.json")
+        val depsFileExists = depsFile.toFile().exists()
         val previewerArguments =
             transport.getOptions() +
             method.getOptions { NetUtils.findFreePort(5000) } +
@@ -69,7 +70,9 @@ class AvaloniaPreviewerProcess(
             .withParameters(previewerArguments)
             .withWorkDirectory(parameters.workingDirectory.toFile())
             .apply {
-                runtime.patchRunCommandLine(this, runtimeArguments)
+                if (depsFileExists) {
+                    runtime.patchRunCommandLine(this, runtimeArguments)
+                }
             }
     }
 

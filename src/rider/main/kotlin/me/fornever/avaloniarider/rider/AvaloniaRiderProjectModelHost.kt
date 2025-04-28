@@ -35,7 +35,7 @@ class AvaloniaRiderProjectModelHost(private val project: Project) {
             .map { projects ->
                 projects
                     .asSequence()
-                    .filter { it.kind == RunnableProjectKinds.DotNetCore || it.kind == RunnableProjectKinds.Console }
+                    .filter { it.kind == RunnableProjectKinds.DotNetCore || it.kind == RunnableProjectKinds.Console || it.kind == RunnableProjectKinds.XamarinMacOS }
                     .sortedBy { it.kind != RunnableProjectKinds.DotNetCore }
                     .distinctBy { it.projectFilePath }
             }
