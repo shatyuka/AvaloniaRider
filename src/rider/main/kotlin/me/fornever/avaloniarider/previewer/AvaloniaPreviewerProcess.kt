@@ -69,6 +69,7 @@ class AvaloniaPreviewerProcess(
             .withExePath(parameters.previewerBinary.toAbsolutePath().toString())
             .withParameters(previewerArguments)
             .withWorkDirectory(parameters.workingDirectory.toFile())
+            .withEnvironment("AVALONIA_DESIGNER_PREVIEW", "1")
             .apply {
                 if (depsFileExists) {
                     runtime.patchRunCommandLine(this, runtimeArguments)
