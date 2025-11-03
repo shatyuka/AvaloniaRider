@@ -6,6 +6,33 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 
 When considering version compatibility (and thus incrementing the major version), we only consider the configuration file major user experience changes. The host IDE version is not considered a version compatibility factor (since otherwise we'd have to increase the major version pretty often and that would make no sense).
 
+## [1.7.0] - 2025-09-09
+### Added
+- A new button to show rendering exception in case when they happen.
+
+### Changed
+- **(Requirement update!)** Update the minimal supported Rider version to 2025.2.
+- Filter WASM projects from the project selector; prioritize the Desktop projects. Thanks to @MikeCodesDotNET!
+
+## [1.6.0] - 2025-07-09
+### Changed
+- **(Requirement update!)** Update the minimal supported Rider version to 2025.2 EAP 5.
+- Minor cleanup of code and workarounds for older Rider issues.
+
+### Added
+- Live template for Avalonia Routed Event. Thanks to @rabbitism!
+
+### Fixed
+- Possible freezes in AvaloniaPreviewerProcess, see [IJPL-193111](https://youtrack.jetbrains.com/issue/IJPL-193111) for more details.
+
+## [1.5.4] - 2025-05-11
+### Changed
+- **(Requirement update!)** Support only Rider 2025.1.2 and later.
+- Update some dependencies.
+
+### Fixed
+- [#511](https://github.com/ForNeVeR/AvaloniaRider/issues/511): broken Avalonia previewer executable path calculation on Rider 2025.1.2.
+
 ## [1.5.3] - 2025-03-07
 ### Changed
 - **(Requirement update!)** Support only Rider 2025.1 EAP7 and later.
@@ -121,4 +148,7 @@ The initial plugin release. The plugin provides the following features for JetBr
 [1.5.1]: https://github.com/ForNeVeR/AvaloniaRider/compare/v1.5.0...v1.5.1
 [1.5.2]: https://github.com/ForNeVeR/AvaloniaRider/compare/v1.5.1...v1.5.2
 [1.5.3]: https://github.com/ForNeVeR/AvaloniaRider/compare/v1.5.2...v1.5.3
-[Unreleased]: https://github.com/ForNeVeR/AvaloniaRider/compare/v1.5.3...HEAD
+[1.5.4]: https://github.com/ForNeVeR/AvaloniaRider/compare/v1.5.3...v1.5.4
+[1.6.0]: https://github.com/ForNeVeR/AvaloniaRider/compare/v1.5.4...v1.6.0
+[1.7.0]: https://github.com/ForNeVeR/AvaloniaRider/compare/v1.6.0...v1.7.0
+[Unreleased]: https://github.com/ForNeVeR/AvaloniaRider/compare/v1.7.0...HEAD

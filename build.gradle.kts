@@ -44,15 +44,19 @@ val intellijPluginId = "avalonia-rider"
 val pluginVersionBase: String by project
 val buildRelease: String by project
 
+val requiredPlugins = listOf("com.jetbrains.xaml.previewer")
+
 dependencies {
     intellijPlatform {
-        rider(libs.versions.riderSdk, useInstaller = false)
+        rider(libs.versions.riderSdk) {
+            useInstaller = false
+        }
         jetbrainsRuntime()
 
         bundledModule("intellij.rider")
-        bundledPlugins("com.jetbrains.xaml.previewer")
+        bundledPlugins(requiredPlugins)
 
-        pluginVerifier()
+        pluginVerifier(libs.intellij.plugin.verifier.cli.map { it.version })
 
         testFramework(TestFrameworkType.Bundled)
     }
@@ -60,6 +64,7 @@ dependencies {
     implementation(libs.bson4Jackson)
 
     testImplementation(libs.openTest4J)
+    testImplementation(libs.junit)
 }
 
 val buildConfiguration = ext.properties["buildConfiguration"] as String? ?: "Debug"
@@ -85,7 +90,9 @@ intellijPlatform {
     pluginVerification {
         ides {
             fun rider(version: Provider<String>) {
-                ide(provider { IntelliJPlatformType.Rider }, version, useInstaller = false)
+                create(IntelliJPlatformType.Rider, version) {
+                    useInstaller = false
+                }
             }
             rider(libs.versions.riderSdk)
             if (libs.versions.riderSdk.get() != libs.versions.riderSdkPreview.get()) {
@@ -235,12 +242,18 @@ tasks {
         version = libs.versions.riderSdkPreview
         useInstaller = false
         task {
+            plugins {
+                bundledPlugins(requiredPlugins)
+            }
             enabled = libs.versions.riderSdk.get() != libs.versions.riderSdkPreview.get()
         }
     }
 
     check {
-        dependsOn(testRiderPreview, verifyPlugin)
+        dependsOn(
+            testRiderPreview,
+            verifyPlugin
+        )
     }
 }
 

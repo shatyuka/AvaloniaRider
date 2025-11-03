@@ -273,7 +273,17 @@ class RunnableAssemblySelectorAction(
                 logger.error("Couldn't find runnable project for path $normalizedPath")
             }
             runnableProject
-        }.sortedBy { it.name }
+        }
+            .filter { !isWebAssemblyProject(it) }
+            .sortedWith(compareBy(
+                // Sort Desktop projects first, then others alphabetically
+                { !it.name.endsWith(".Desktop", ignoreCase = true) },
+                { it.name }
+            ))
         return selectableRunnableProjects
+    }
+
+    private fun isWebAssemblyProject(project: RunnableProject): Boolean {
+        return project.projectOutputs.all { it.tfm?.presentableName.orEmpty().endsWith("-browser") }
     }
 }

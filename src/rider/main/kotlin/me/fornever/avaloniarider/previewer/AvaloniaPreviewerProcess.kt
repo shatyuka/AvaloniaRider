@@ -2,9 +2,10 @@ package me.fornever.avaloniarider.previewer
 
 import com.intellij.execution.configurations.GeneralCommandLine
 import com.intellij.execution.process.OSProcessHandler
-import com.intellij.execution.process.ProcessAdapter
+import com.intellij.execution.process.OSProcessUtil
 import com.intellij.execution.process.ProcessEvent
 import com.intellij.execution.process.ProcessHandler
+import com.intellij.execution.process.ProcessListener
 import com.intellij.execution.ui.ConsoleView
 import com.intellij.execution.ui.ConsoleViewContentType
 import com.intellij.openapi.diagnostic.Logger
@@ -65,6 +66,7 @@ class AvaloniaPreviewerProcess(
                 )
             } else emptyList()
 
+        logger.info("Previewer process path: \"${parameters.previewerBinary}\".")
         return GeneralCommandLine()
             .withExePath(parameters.previewerBinary.toAbsolutePath().toString())
             .withParameters(previewerArguments)
@@ -113,6 +115,12 @@ class AvaloniaPreviewerProcess(
             }
         }) { handler ->
             handler.destroyProcess()
+            if (!handler.waitFor(100)) {
+                // TODO[#524]: This is a workaround for https://youtrack.jetbrains.com/issue/IJPL-193111
+                // handler.destroyProcess() won't destroy the process if LocalProcessService wasn't instantiated in this
+                // IDE session.
+                OSProcessUtil.killProcess(handler.process)
+            }
             handler.waitFor()
         }
 
@@ -136,7 +144,7 @@ class AvaloniaPreviewerProcess(
 
     private suspend fun waitForTermination(process: ProcessHandler, title: String) {
         val result = CompletableDeferred<Unit>()
-        process.addProcessListener(object : ProcessAdapter() {
+        process.addProcessListener(object : ProcessListener {
             override fun processTerminated(event: ProcessEvent) {
                 result.complete(Unit)
             }

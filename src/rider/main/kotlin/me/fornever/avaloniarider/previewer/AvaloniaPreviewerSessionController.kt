@@ -109,12 +109,12 @@ class AvaloniaPreviewerSessionController(
 
     private val htmlTransportStartedSignal = Signal<HtmlTransportStartedMessage>()
     private val frameSignal = Signal<FrameMessage>()
-    private val updateXamlResultSignal = Signal<UpdateXamlResultMessage>()
+    private val updateXamlResultProperty = OptProperty<UpdateXamlResultMessage>()
     private val criticalErrorSignal = Signal<Throwable>()
 
     val htmlTransportStarted: ISource<HtmlTransportStartedMessage> = htmlTransportStartedSignal
     val frame: ISource<FrameMessage> = frameSignal
-    val updateXamlResult: ISource<UpdateXamlResultMessage> = updateXamlResultSignal
+    val updateXamlResult: IOptPropertyView<UpdateXamlResultMessage> = updateXamlResultProperty
     val criticalError: ISource<Throwable> = criticalErrorSignal
 
     val dpi = OptProperty<Double>()
@@ -230,7 +230,7 @@ class AvaloniaPreviewerSessionController(
                 statusProperty.value = Status.XamlError
                 inFlightUpdate.value = false
             }
-            updateXamlResultSignal.fire(message)
+            updateXamlResultProperty.set(message)
         }
         frame.adviseOnUiThread(lifetime) { frame ->
             statusProperty.value = Status.Working // reset to the good status after a possible error
@@ -327,8 +327,9 @@ class AvaloniaPreviewerSessionController(
             } catch (ex: AvaloniaPreviewerInitializationException) {
                 criticalErrorSignal.fire(ex)
                 logger.warn(ex)
-            } catch (_: CancellationException) {
+            } catch (x: CancellationException) {
                 logger.info("${xamlFile.name}: previewer session has been cancelled")
+                throw x
             } catch (t: Throwable) {
                 logger.error(t)
             } finally {

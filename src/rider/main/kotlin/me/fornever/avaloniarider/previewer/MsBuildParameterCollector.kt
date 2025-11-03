@@ -5,13 +5,19 @@ import com.intellij.openapi.diagnostic.logger
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.io.FileUtil
 import com.intellij.workspaceModel.ide.toPath
+import com.jetbrains.rd.util.threading.coroutines.asCoroutineDispatcher
+import com.jetbrains.rider.model.RdNuGetFolderKind
+import com.jetbrains.rider.model.nuGetHost
+import com.jetbrains.rider.projectView.solution
 import com.jetbrains.rider.projectView.workspace.ProjectModelEntity
+import com.jetbrains.rider.protocol.protocol
 import com.jetbrains.rider.run.environment.MSBuildEvaluator
 import com.jetbrains.rider.runtime.DotNetRuntime
 import com.jetbrains.rider.runtime.RiderDotNetActiveRuntimeHost
 import com.jetbrains.rider.runtime.dotNetCore.DotNetCoreRuntime
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.withContext
 import me.fornever.avaloniarider.AvaloniaRiderBundle
 import me.fornever.avaloniarider.exceptions.AvaloniaPreviewerInitializationException
 import me.fornever.avaloniarider.idea.settings.AvaloniaWorkspaceSettings
@@ -20,9 +26,10 @@ import me.fornever.avaloniarider.idea.settings.getPath
 import me.fornever.avaloniarider.model.RdProjectOutput
 import me.fornever.avaloniarider.rider.AvaloniaRiderProjectModelHost
 import org.jetbrains.annotations.Nls
+import java.io.File
 import java.nio.file.Path
 import java.nio.file.Paths
-import kotlin.io.path.nameWithoutExtension
+import kotlin.io.path.*
 
 @Service(Service.Level.PROJECT)
 class MsBuildParameterCollector(private val project: Project) {
@@ -70,6 +77,7 @@ class MsBuildParameterCollector(private val project: Project) {
                 )
             )
         )
+
         val targetDir = Paths.get(getProperty(runnableProjectProperties, "TargetDir"))
         val targetName = getProperty(runnableProjectProperties, "TargetName")
         val targetPath = Paths.get(getProperty(runnableProjectProperties, "TargetPath"))
