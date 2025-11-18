@@ -17,14 +17,6 @@ plugins {
     alias(libs.plugins.kotlinJvm)
 }
 
-jvmWrapper {
-    linuxAarch64JvmUrl = "https://download.oracle.com/java/21/archive/jdk-21.0.3_linux-aarch64_bin.tar.gz"
-    linuxX64JvmUrl = "https://download.oracle.com/java/21/archive/jdk-21.0.3_linux-x64_bin.tar.gz"
-    macAarch64JvmUrl = "https://download.oracle.com/java/21/archive/jdk-21.0.3_macos-aarch64_bin.tar.gz"
-    macX64JvmUrl = "https://download.oracle.com/java/21/archive/jdk-21.0.3_macos-x64_bin.tar.gz"
-    windowsX64JvmUrl = "https://download.oracle.com/java/21/archive/jdk-21.0.3_windows-x64_bin.zip"
-}
-
 allprojects {
     repositories {
         mavenCentral()
@@ -44,7 +36,7 @@ val intellijPluginId = "avalonia-rider"
 val pluginVersionBase: String by project
 val buildRelease: String by project
 
-val requiredPlugins = listOf("com.jetbrains.xaml.previewer")
+val requiredPlugins = listOf("com.jetbrains.xaml.previewer", "tanvd.grazi" /* test only */)
 
 dependencies {
     intellijPlatform {

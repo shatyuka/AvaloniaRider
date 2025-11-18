@@ -16,7 +16,7 @@ jobs:
       matrix:
         image:
           # renovate:
-          - macos-14
+          - macos-15
           # renovate:
           - ubuntu-24.04
           # renovate:
@@ -59,20 +59,20 @@ jobs:
       - name: Test
         run: ./gradlew --info -PbuildConfiguration=Release -PbuildNumber=${{ github.run_number }} check
       - name: Collect test results
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: ${{ runner.os }}.test-results
           path: build/reports/tests
         if: ${{ always() }}
       - name: Collect test logs
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: ${{ runner.os }}.test-logs
           path: build/idea-sandbox/*/log-test
         if: ${{ always() }}
       - name: Collect Plugin Verifier result
         if: ${{ always() }}
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: ${{ runner.os }}.pluginVerifier-result
           path: ${{ github.workspace }}/build/reports/pluginVerifier
@@ -82,4 +82,4 @@ jobs:
     name: "Validate Gradle wrapper"
     steps:
       - uses: actions/checkout@v5
-      - uses: gradle/actions/wrapper-validation@v4
+      - uses: gradle/actions/wrapper-validation@v5
