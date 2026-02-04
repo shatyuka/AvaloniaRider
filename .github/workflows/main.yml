@@ -3,6 +3,7 @@ on:
   push:
     branches:
       - main
+      - renovate/**
   pull_request:
     branches:
       - main
@@ -26,7 +27,7 @@ jobs:
       DOTNET_NOLOGO: 1
       DOTNET_CLI_TELEMETRY_OPTOUT: 1
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
 
       - if: runner.os == 'Linux'
         name: Free disk space
@@ -36,7 +37,7 @@ jobs:
           large-packages: false
 
       - name: 'Cache downloaded JDK'
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: |
             ~/.local/share/gradle-jvm
@@ -59,20 +60,20 @@ jobs:
       - name: Test
         run: ./gradlew --info -PbuildConfiguration=Release -PbuildNumber=${{ github.run_number }} check
       - name: Collect test results
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: ${{ runner.os }}.test-results
           path: build/reports/tests
         if: ${{ always() }}
       - name: Collect test logs
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: ${{ runner.os }}.test-logs
           path: build/idea-sandbox/*/log-test
         if: ${{ always() }}
       - name: Collect Plugin Verifier result
         if: ${{ always() }}
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: ${{ runner.os }}.pluginVerifier-result
           path: ${{ github.workspace }}/build/reports/pluginVerifier
@@ -81,5 +82,5 @@ jobs:
     runs-on: ubuntu-24.04
     name: "Validate Gradle wrapper"
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
       - uses: gradle/actions/wrapper-validation@v5

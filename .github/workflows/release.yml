@@ -3,6 +3,7 @@ on:
   push:
     branches:
       - main
+      - renovate/**
     tags:
       - 'v*'
   pull_request:
@@ -22,7 +23,7 @@ jobs:
         run: echo "version=$(if ($env:GITHUB_REF.StartsWith('refs/tags/v')) { $env:GITHUB_REF -replace '^refs/tags/v', '' } else { 'next' })" >> $env:GITHUB_OUTPUT
 
       - name: Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
 
       - name: Read the changelog
         uses: ForNeVeR/ChangelogAutomation.action@v2
@@ -31,7 +32,7 @@ jobs:
           output: ./changelog-section.md
 
       - name: 'Cache downloaded JDK'
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: |
             ~/.local/share/gradle-jvm
@@ -59,13 +60,13 @@ jobs:
         run: scripts/Unpack-Distribution.ps1
 
       - name: Upload the artifact
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: avaloniarider-${{ steps.version.outputs.version }}.zip
           path: build/distributions/unpacked
 
       - name: Upload the changelog
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: changelog-section.md
           path: ./changelog-section.md
